@@ -7,3 +7,4 @@ faster-whisper>=0.10.0
 pystray>=0.19.4
 Pillow>=9.5.0
 pyperclip>=1.8.2
+flet>=0.25.0

@@ -16,11 +16,13 @@ Controls:
 import sys
 import time
 import threading
+import subprocess
 from audio_recorder import AudioRecorder
 from transcriber import Transcriber, AVAILABLE_MODELS
 from text_injector import TextInjector
 from hotkey_manager import HotkeyManager
 from tray_icon import TrayIcon
+from stats_manager import get_stats_manager
 
 
 def select_model():
@@ -55,13 +57,30 @@ class WisprFlowClone:
         self.audio_recorder = AudioRecorder()
         self.transcriber = Transcriber(model_name=model_name)
         self.text_injector = TextInjector()
-        self.tray_icon = TrayIcon(on_quit_callback=self.shutdown)
+        self.stats = get_stats_manager()
+        self.model_name = model_name
+        self.tray_icon = TrayIcon(
+            on_quit_callback=self.shutdown,
+            on_open_stats_callback=self.open_stats_gui
+        )
         self.hotkey_manager = HotkeyManager(
             on_press_callback=self.on_record_start,
             on_release_callback=self.on_record_stop
         )
         self.running = True
         self.processing = False
+        self.gui_process = None
+
+    def open_stats_gui(self):
+        """Open the stats GUI in a separate process."""
+        try:
+            # Launch stats GUI as separate process
+            self.gui_process = subprocess.Popen(
+                [sys.executable, "stats_gui.py"],
+                cwd=sys.path[0] or "."
+            )
+        except Exception as e:
+            print(f"Error opening stats GUI: {e}")
 
     def on_record_start(self):
         """Called when push-to-talk key is pressed."""
@@ -111,6 +130,10 @@ class WisprFlowClone:
             
             if text:
                 print(f"Transcribed: {text}")
+                
+                # Record stats
+                self.stats.add_transcription(text, duration, self.model_name)
+                
                 # Small delay to ensure the target window has focus
                 time.sleep(0.1)
                 # Inject the text
@@ -157,8 +180,18 @@ class WisprFlowClone:
 
 
 def main():
-    # Show model selection menu
-    model_name = select_model()
+    # Check for --auto flag (launched from GUI shortcut)
+    auto_mode = "--auto" in sys.argv
+    
+    if auto_mode:
+        # Use saved model from stats
+        stats = get_stats_manager()
+        model_name = stats.get_current_model()
+        print(f"Auto-starting with model: {model_name}")
+    else:
+        # Show model selection menu
+        model_name = select_model()
+    
     print()
     
     app = WisprFlowClone(model_name=model_name)

@@ -9,14 +9,16 @@ from config import APP_NAME
 
 
 class TrayIcon:
-    def __init__(self, on_quit_callback=None):
+    def __init__(self, on_quit_callback=None, on_open_stats_callback=None):
         """
         Initialize the system tray icon.
         
         Args:
             on_quit_callback: Function to call when user clicks Quit
+            on_open_stats_callback: Function to call when user clicks Open Stats
         """
         self.on_quit_callback = on_quit_callback
+        self.on_open_stats_callback = on_open_stats_callback
         self.icon = None
         self.is_recording = False
         
@@ -96,8 +98,15 @@ class TrayIcon:
                 enabled=False
             ),
             pystray.Menu.SEPARATOR,
+            pystray.MenuItem("Open Stats", self._on_open_stats),
+            pystray.Menu.SEPARATOR,
             pystray.MenuItem("Quit", self._on_quit)
         )
+
+    def _on_open_stats(self, icon, item):
+        """Handle open stats menu item click."""
+        if self.on_open_stats_callback:
+            self.on_open_stats_callback()
 
     def _on_quit(self, icon, item):
         """Handle quit menu item click."""
