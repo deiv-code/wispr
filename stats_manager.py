@@ -4,6 +4,7 @@ WisprFlow - Stats Manager
 Tracks transcription statistics and history with JSON persistence.
 """
 
+from __future__ import annotations
 import json
 import os
 from datetime import datetime
@@ -37,7 +38,7 @@ class StatsManager:
             "total_transcriptions": 0,
             "total_audio_seconds": 0.0,
             "history": [],  # List of transcription records
-            "current_model": "tiny"
+            "current_model": "base"
         }
     
     def _save_stats(self):
@@ -102,7 +103,7 @@ class StatsManager:
     
     def get_current_model(self) -> str:
         """Get the currently selected model."""
-        return self.stats.get("current_model", "tiny")
+        return self.stats.get("current_model", "base")
     
     def set_current_model(self, model: str):
         """Set the current model."""
