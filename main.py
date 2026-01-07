@@ -144,7 +144,7 @@ class WisprFlowClone:
         self.hotkey_manager.start()
         print()
         
-        print("Ready! Hold '6' key to record, release to transcribe.")
+        print("Ready! Hold 'Ctrl+Windows' to record, release to transcribe.")
         print("Right-click the tray icon to quit.")
         print()
         

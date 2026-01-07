@@ -1,10 +1,13 @@
 """
-Hotkey Manager - Handles push-to-talk key detection (6 key)
+Hotkey Manager - Handles push-to-talk key detection
 
-Uses the '6' key (vk: 54) as push-to-talk.
+Uses keyboard library for better key suppression on Windows.
+Hotkey: Ctrl + Windows key
 """
 
-from pynput import keyboard
+import keyboard
+import threading
+import time
 
 
 class HotkeyManager:
@@ -18,55 +21,43 @@ class HotkeyManager:
         """
         self.on_press_callback = on_press_callback
         self.on_release_callback = on_release_callback
-        self.listener = None
         self.is_key_pressed = False
-        
-        # Target key: '6' with vk code 54
-        self.target_vk = 54
+        self.running = False
+        self.monitor_thread = None
 
-    def _on_press(self, key):
-        """Handle key press events."""
-        # Check if this is our target key
-        if self._is_target_key(key):
-            if not self.is_key_pressed:
+    def _check_keys(self):
+        """Monitor thread that checks if both Ctrl and Windows are pressed."""
+        while self.running:
+            # Check if both Ctrl and Windows key are currently pressed
+            ctrl_pressed = keyboard.is_pressed('ctrl')
+            win_pressed = keyboard.is_pressed(91)  # Scan code for Windows key
+            
+            both_pressed = ctrl_pressed and win_pressed
+            
+            if both_pressed and not self.is_key_pressed:
+                # Keys just pressed
                 self.is_key_pressed = True
                 if self.on_press_callback:
                     self.on_press_callback()
-
-    def _on_release(self, key):
-        """Handle key release events."""
-        # Check if this is our target key
-        if self._is_target_key(key):
-            if self.is_key_pressed:
+            elif not both_pressed and self.is_key_pressed:
+                # Keys just released
                 self.is_key_pressed = False
                 if self.on_release_callback:
                     self.on_release_callback()
-
-    def _is_target_key(self, key):
-        """Check if the pressed key is our push-to-talk key ('6', vk: 54)."""
-        try:
-            # Check for character key '6'
-            if hasattr(key, 'char') and key.char == '6':
-                return True
-            # Check for virtual key code 54
-            vk = getattr(key, 'vk', None)
-            if vk == self.target_vk:
-                return True
-        except:
-            pass
-        return False
+            
+            # Small sleep to prevent high CPU usage
+            time.sleep(0.05)
 
     def start(self):
         """Start listening for hotkey events."""
-        self.listener = keyboard.Listener(
-            on_press=self._on_press,
-            on_release=self._on_release
-        )
-        self.listener.start()
-        print("Hotkey listener started. Hold '6' key to record...")
+        self.running = True
+        self.monitor_thread = threading.Thread(target=self._check_keys, daemon=True)
+        self.monitor_thread.start()
+        print("Hotkey listener started. Hold 'Ctrl+Windows' to record...")
 
     def stop(self):
         """Stop listening for hotkey events."""
-        if self.listener:
-            self.listener.stop()
-            self.listener = None
+        self.running = False
+        if self.monitor_thread:
+            self.monitor_thread.join(timeout=1)
+        keyboard.unhook_all()
