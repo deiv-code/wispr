@@ -1,5 +1,5 @@
 """
-WisprFlow - Sound Effects
+Whisper - Sound Effects
 
 Plays audio feedback sounds for recording start/stop.
 Uses winsound for Windows native sound playback (no dependencies).

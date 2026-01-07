@@ -1,5 +1,5 @@
 """
-WisprFlow - Flow Bar
+Whisper - Flow Bar
 
 A minimal floating indicator that shows recording status.
 Appears at the top of the screen when recording.
@@ -29,7 +29,7 @@ class FlowBar:
     def _create_window(self):
         """Create the tkinter window."""
         self.root = tk.Tk()
-        self.root.title("WisprFlow")
+        self.root.title("Whisper")
         
         # Remove window decorations
         self.root.overrideredirect(True)

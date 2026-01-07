@@ -1,5 +1,5 @@
 """
-WisprFlow - Stats Manager
+Whisper - Stats Manager
 
 Tracks transcription statistics and history with JSON persistence.
 """

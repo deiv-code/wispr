@@ -1,5 +1,5 @@
 """
-WisprFlow Clone - Main Entry Point
+Whisper Clone - Main Entry Point
 
 A push-to-talk voice dictation tool that transcribes speech and types it
 into any focused application.
@@ -72,7 +72,7 @@ def remove_lock():
 def select_model():
     """Display model selection menu and return chosen model name."""
     print("=" * 50)
-    print("WisprFlow Clone - Model Selection")
+    print("Whisper Clone - Model Selection")
     print("=" * 50)
     print()
     print("Available models:")
@@ -96,7 +96,7 @@ def select_model():
             print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
 
-class WisprFlowClone:
+class WhisperClone:
     def __init__(self, model_name="base"):
         self.audio_recorder = AudioRecorder()
         self.transcriber = Transcriber(model_name=model_name)
@@ -272,7 +272,7 @@ def main():
     
     # Prevent multiple instances
     if is_already_running():
-        print("WisprFlow is already running!")
+        print("Whisper is already running!")
         print("Check your system tray for the existing instance.")
         sys.exit(0)
     
@@ -291,7 +291,7 @@ def main():
     
     print()
     
-    app = WisprFlowClone(model_name=model_name)
+    app = WhisperClone(model_name=model_name)
     try:
         app.run()
     except KeyboardInterrupt:

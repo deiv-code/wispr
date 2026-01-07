@@ -1,5 +1,5 @@
 """
-WisprFlow Clone - Configuration
+Whisper Clone - Configuration
 """
 
 # Hotkey for push-to-talk (G6 key)
@@ -21,4 +21,4 @@ WHISPER_THREADS = 8  # Adjust based on your CPU cores
 USE_CLIPBOARD = True  # True = instant paste, False = character-by-character
 
 # App name
-APP_NAME = "WisprFlow Clone"
+APP_NAME = "Whisper Clone"

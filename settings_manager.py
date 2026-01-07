@@ -1,5 +1,5 @@
 """
-WisprFlow - Settings Manager
+Whisper - Settings Manager
 
 Manages app settings with JSON persistence.
 """

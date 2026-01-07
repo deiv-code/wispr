@@ -1,5 +1,5 @@
 """
-WisprFlow - Stats GUI
+Whisper - Stats GUI
 
 A minimal, modern Flet-based dashboard for viewing transcription stats and settings.
 """
@@ -13,7 +13,7 @@ from settings_manager import get_settings
 from transcriber import AVAILABLE_MODELS
 
 
-class WisprFlowGUI:
+class WhisperGUI:
     def __init__(self, on_model_change=None):
         """
         Initialize the GUI.
@@ -448,7 +448,7 @@ class WisprFlowGUI:
                     ft.Container(
                         content=ft.Column(
                             controls=[
-                                ft.Text("WisprFlow", size=12, color=ft.colors.GREY_500),
+                                ft.Text("Whisper", size=12, color=ft.colors.GREY_500),
                                 ft.Text("Version 1.0.0", size=11, color=ft.colors.GREY_600),
                             ],
                             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -469,7 +469,7 @@ class WisprFlowGUI:
         self.page = page
         
         # Page settings
-        page.title = "WisprFlow"
+        page.title = "Whisper"
         page.theme_mode = ft.ThemeMode.DARK
         page.padding = 0
         page.window.width = 400
@@ -518,7 +518,7 @@ class WisprFlowGUI:
                             content=ft.Row(
                                 controls=[
                                     ft.Icon(ft.icons.GRAPHIC_EQ, size=24, color=ft.colors.BLUE_400),
-                                    ft.Text("WisprFlow", size=20, weight=ft.FontWeight.BOLD),
+                                    ft.Text("Whisper", size=20, weight=ft.FontWeight.BOLD),
                                 ],
                                 spacing=8,
                             ),
@@ -564,7 +564,7 @@ class WisprFlowGUI:
 
 def run_gui(on_model_change=None):
     """Run the GUI as a standalone app."""
-    gui = WisprFlowGUI(on_model_change=on_model_change)
+    gui = WhisperGUI(on_model_change=on_model_change)
     ft.app(target=gui.main)
 
 
