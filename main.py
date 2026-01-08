@@ -122,7 +122,8 @@ class WhisperClone:
         )
         self.hotkey_manager = HotkeyManager(
             on_press_callback=self.on_record_start,
-            on_release_callback=self.on_record_stop
+            on_release_callback=self.on_record_stop,
+            hotkey=self.settings.hotkey
         )
         self.running = True
         self.processing = False

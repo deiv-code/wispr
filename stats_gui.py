@@ -12,6 +12,7 @@ from datetime import datetime
 from stats_manager import get_stats_manager
 from settings_manager import get_settings
 from transcriber import AVAILABLE_MODELS
+from hotkey_manager import HOTKEY_OPTIONS
 
 # Get the directory where this script is located
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -41,6 +42,7 @@ class WhisperGUI:
         # Settings UI references
         self.flow_bar_switch = None
         self.sound_effects_switch = None
+        self.hotkey_dropdown = None
         
         # For tracking changes
         self.last_transcription_count = 0
@@ -200,7 +202,14 @@ class WhisperGUI:
         self.settings.sound_effects_enabled = e.control.value
         status = "enabled" if e.control.value else "disabled"
         self._show_snackbar(f"Sound effects {status}. Restart to apply.")
-    
+
+    def _on_hotkey_changed(self, e):
+        """Handle hotkey dropdown change."""
+        hotkey = e.control.value
+        self.settings.hotkey = hotkey
+        display_name = HOTKEY_OPTIONS.get(hotkey, hotkey)
+        self._show_snackbar(f"Hotkey changed to {display_name}. Restart to apply.")
+
     def _show_snackbar(self, message: str):
         """Show a snackbar message."""
         if self.page:
@@ -362,7 +371,21 @@ class WhisperGUI:
             on_change=self._on_sound_effects_changed,
             active_color=ft.colors.BLUE_400,
         )
-        
+
+        # Hotkey dropdown
+        current_hotkey = self.settings.hotkey
+        self.hotkey_dropdown = ft.Dropdown(
+            value=current_hotkey,
+            options=[
+                ft.dropdown.Option(key, display_name)
+                for key, display_name in HOTKEY_OPTIONS.items()
+            ],
+            on_change=self._on_hotkey_changed,
+            border_radius=8,
+            content_padding=12,
+            bgcolor=ft.colors.GREY_900,
+        )
+
         def build_setting_row(title, subtitle, control):
             """Build a setting row with title, subtitle, and control."""
             return ft.Container(
@@ -422,26 +445,18 @@ class WhisperGUI:
                         self.sound_effects_switch,
                     ),
                     
-                    # Hotkey info (read-only for now)
+                    # Hotkey selection
                     ft.Container(
-                        content=ft.Row(
+                        content=ft.Column(
                             controls=[
-                                ft.Column(
-                                    controls=[
-                                        ft.Text("Hotkey", size=14, weight=ft.FontWeight.W_500),
-                                        ft.Text("Press and hold to record", size=11, color=ft.colors.GREY_500),
-                                    ],
-                                    spacing=2,
-                                    expand=True,
-                                ),
+                                ft.Text("Hotkey", size=14, weight=ft.FontWeight.W_500),
+                                ft.Text("Press and hold to record", size=11, color=ft.colors.GREY_500),
                                 ft.Container(
-                                    content=ft.Text("Ctrl + Win", size=13, color=ft.colors.BLUE_400),
-                                    padding=ft.padding.symmetric(horizontal=12, vertical=6),
-                                    border_radius=6,
-                                    bgcolor=ft.colors.GREY_800,
+                                    content=self.hotkey_dropdown,
+                                    padding=ft.padding.only(top=8),
                                 ),
                             ],
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                            spacing=2,
                         ),
                         padding=16,
                         border_radius=12,

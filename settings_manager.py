@@ -99,11 +99,19 @@ class SettingsManager:
     @property
     def language(self) -> str:
         return self.settings.get("language", "en")
-    
+
     @language.setter
     def language(self, value: str):
         self.set("language", value)
-    
+
+    @property
+    def hotkey(self) -> str:
+        return self.settings.get("hotkey", "ctrl+win")
+
+    @hotkey.setter
+    def hotkey(self, value: str):
+        self.set("hotkey", value)
+
     def reset_to_defaults(self):
         """Reset all settings to defaults."""
         with self.lock:
