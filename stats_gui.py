@@ -5,12 +5,17 @@ A minimal, modern Flet-based dashboard for viewing transcription stats and setti
 """
 
 from __future__ import annotations
+import os
 import flet as ft
 import asyncio
 from datetime import datetime
 from stats_manager import get_stats_manager
 from settings_manager import get_settings
 from transcriber import AVAILABLE_MODELS
+
+# Get the directory where this script is located
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ICON_PATH = os.path.join(SCRIPT_DIR, "assets", "icon.ico")
 
 
 class WhisperGUI:
@@ -477,7 +482,11 @@ class WhisperGUI:
         page.window.resizable = True
         page.window.min_width = 350
         page.window.min_height = 500
-        
+
+        # Set window icon (taskbar icon)
+        if os.path.exists(ICON_PATH):
+            page.window.icon = "icon.ico"
+
         # Stop refresh when window closes
         def on_window_event(e):
             if e.data == "close":
@@ -565,7 +574,8 @@ class WhisperGUI:
 def run_gui(on_model_change=None):
     """Run the GUI as a standalone app."""
     gui = WhisperGUI(on_model_change=on_model_change)
-    ft.app(target=gui.main)
+    assets_dir = os.path.join(SCRIPT_DIR, "assets")
+    ft.app(target=gui.main, assets_dir=assets_dir)
 
 
 if __name__ == "__main__":
