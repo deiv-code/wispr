@@ -520,7 +520,7 @@ class WhisperGUI:
             text="Stats",
             content=self._build_stats_tab(),
         )
-        
+
         settings_tab = ft.Tab(
             text="Settings",
             content=self._build_settings_tab(),
